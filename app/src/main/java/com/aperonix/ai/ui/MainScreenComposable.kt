@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,12 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aperonix.ai.R
 import com.aperonix.ai.ui.main.MainViewModel
 
 @Composable
-fun MainScreenComposable(viewModel: MainViewModel = viewModel()) {
+fun MainScreenComposable(viewModel: MainViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
     Box(
@@ -48,13 +49,12 @@ fun MainScreenComposable(viewModel: MainViewModel = viewModel()) {
                     .size(260.dp)
                     .shadow(10.dp, CircleShape)
                     .background(Brush.radialGradient(listOf(Color(0xFF5B2EE0).copy(alpha = 0.12f), Color.Transparent))))
-                
+
                 Icon(
                     painter = painterResource(id = R.drawable.ic_aperonix_logo),
                     contentDescription = "Aperonix Logo",
                     modifier = Modifier
                         .size(180.dp)
-                        .then(Modifier)
                 )
             }
 

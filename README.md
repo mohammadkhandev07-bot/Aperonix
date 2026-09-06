@@ -1,26 +1,32 @@
-# Aperonix - Voice-first AI Assistant (Phase 1)
+# Aperonix
 
-This repository contains the initial Android project skeleton for the Aperonix voice-first assistant.
+Aperonix is a voice-first Android AI assistant. This repository contains a complete Android project implemented in Kotlin and Jetpack Compose.
 
-Phase 1 delivered items:
-- Android project structure
-- Gradle Kotlin DSL files: settings.gradle.kts, build.gradle.kts, app/build.gradle.kts
-- Basic MainActivity in Jetpack Compose showing center logo and status text
-- AndroidManifest with required permissions (INTERNET, RECORD_AUDIO)
-- Resource placeholders (logo vector placeholder, colors, styles)
-
-Gemini API key configuration:
-- Use local.properties in your development environment with the following entry:
+IMPORTANT: This repository does NOT include any real Gemini API key. Do NOT commit your API keys. For development, add the following to your local.properties (do NOT commit):
 
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 
-Do NOT commit your real API key to the repository.
+What was implemented in this update:
+- SplashActivity and MainActivity wiring
+- Main Compose UI with breathing/pulse animation and microphone interaction
+- SpeechRecognizerManager (Speech-to-Text)
+- TextToSpeechManager with utterance completion callback
+- GeminiClient abstraction (HTTP placeholder, handles missing key)
+- Room entities and DAOs for Conversation and Memory
+- AppDatabase singleton
+- SettingsRepository using DataStore (preferences)
+- ActionValidator and ActionExecutor for safe Android actions
+- Unit tests for ActionValidator
 
-How to build (Android Studio recommended):
-1. Open the project in Android Studio.
-2. Add the supplied logo image to app/src/main/res/drawable/ic_aperonix_logo.png (replace the placeholder vector).
-3. Put your Gemini API key in local.properties (do NOT commit it).
-4. Sync Gradle and run the app.
+Next steps (not yet completed):
+- Full Settings UI
+- Memory and Conversation history UI
+- Full Gemini production integration (replace placeholder endpoint)
+- Additional tests
 
-Notes:
-- This is Phase 1 only. Core app skeleton and build config created. Next phases will implement AI wiring, voice managers, Room, DataStore, actions, settings and full UI states.
+Build
+- Open in Android Studio, add your GEMINI_API_KEY to local.properties, and build.
+- APK path after successful build: app/build/outputs/apk/debug/app-debug.apk
+
+Security note
+- Embedding an API key inside an APK is not fully secure. Users with APK inspection skills can extract embedded keys. For production use, a secure backend proxy is strongly recommended.

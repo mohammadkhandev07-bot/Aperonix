@@ -38,21 +38,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         speechManager.startListening { result ->
             viewModelScope.launch {
                 _uiState.value = UiState.Thinking
-                // Save user message
-                db.conversationDao().insert(ConversationEntity(role = "user", content = result, timestamp = System.currentTimeMillis()))
-                // Call Gemini (demo)
-                val res = geminiClient.generateText(result)
-                when (res) {
-                    is com.aperonix.ai.ai.GeminiResult.Success -> {
-                        val text = res.text
-                        // Save assistant message
-                        db.conversationDao().insert(ConversationEntity(role = "assistant", content = text, timestamp = System.currentTimeMillis()))
-                        _uiState.value = UiState.Speaking
-                        ttsManager.speak(text)
+                try {
+                    // Save user message
+                    db.conversationDao().insert(ConversationEntity(role = "user", content = result, timestamp = System.currentTimeMillis()))
+                    // Call Gemini (demo)
+                    when (val res = geminiClient.generateText(result)) {
+                        is com.aperonix.ai.ai.GeminiResult.Success -> {
+                            val text = res.text
+                            // Save assistant message
+                            db.conversationDao().insert(ConversationEntity(role = "assistant", content = text, timestamp = System.currentTimeMillis()))
+                            _uiState.value = UiState.Speaking
+                            ttsManager.speak(text) {
+                                _uiState.value = UiState.Idle
+                            }
+                        }
+                        is com.aperonix.ai.ai.GeminiResult.Error -> {
+                            _uiState.value = UiState.Error(res.message)
+                        }
                     }
-                    is com.aperonix.ai.ai.GeminiResult.Error -> {
-                        _uiState.value = UiState.Error(res.message)
-                    }
+                } catch (e: Exception) {
+                    _uiState.value = UiState.Error(e.localizedMessage ?: "Unknown error")
                 }
             }
         }

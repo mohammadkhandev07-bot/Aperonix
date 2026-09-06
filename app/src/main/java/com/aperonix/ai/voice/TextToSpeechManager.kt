@@ -1,7 +1,9 @@
 package com.aperonix.ai.voice
 
 import android.content.Context
+import android.os.Build
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +19,8 @@ class TextToSpeechManager(private val context: Context) : TextToSpeech.OnInitLis
     private var tts: TextToSpeech? = null
     private val availableVoices = mutableListOf<TtsVoiceInfo>()
 
+    private var currentOnComplete: (() -> Unit)? = null
+
     init {
         tts = TextToSpeech(context, this)
     }
@@ -25,12 +29,26 @@ class TextToSpeechManager(private val context: Context) : TextToSpeech.OnInitLis
         if (status == TextToSpeech.SUCCESS) {
             _initialized.value = true
             try {
-                val voices = tts?.voices
+                val voices = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) tts?.voices else null
                 voices?.forEach { v ->
-                    // Avoid null locale
                     val locale = v.locale ?: Locale.getDefault()
                     availableVoices.add(TtsVoiceInfo(v.name, locale))
                 }
+
+                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) {
+                        // no-op
+                    }
+
+                    override fun onDone(utteranceId: String?) {
+                        currentOnComplete?.invoke()
+                    }
+
+                    override fun onError(utteranceId: String?) {
+                        currentOnComplete?.invoke()
+                    }
+                })
+
             } catch (e: Exception) {
                 Log.w("TTS", "voice enumeration failed", e)
             }
@@ -41,8 +59,8 @@ class TextToSpeechManager(private val context: Context) : TextToSpeech.OnInitLis
 
     fun speak(text: String, onComplete: (() -> Unit)? = null) {
         if (tts == null) return
+        currentOnComplete = onComplete
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "APERONIX_UTTERANCE")
-        // Note: Utterance progress listener could be attached for onComplete
     }
 
     fun setSpeechRate(rate: Float) {

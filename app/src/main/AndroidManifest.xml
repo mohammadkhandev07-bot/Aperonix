@@ -12,13 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.Aperonix">
         <activity
-            android:name="com.aperonix.ai.ui.MainActivity"
+            android:name="com.aperonix.ai.ui.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.aperonix.ai.ui.MainActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
