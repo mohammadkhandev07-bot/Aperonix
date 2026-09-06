@@ -1,0 +1,9 @@
+# APK build note
+
+To produce the APK run:
+
+./gradlew clean assembleDebug
+
+APK will be at: app/build/outputs/apk/debug/app-debug.apk
+
+If you want me to add the exact supplied logo image into the repository, reply with ADD_LOGO_NOW and I will push it. Otherwise the placeholder vector will be used and the app will still build.

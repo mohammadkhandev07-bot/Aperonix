@@ -4,8 +4,6 @@
     android:height="512dp"
     android:viewportWidth="512"
     android:viewportHeight="512">
-    <!-- Placeholder vector to be replaced with supplied logo file. -->
-    <path
-        android:fillColor="#FF6EA1"
-        android:pathData="M256,32 C... Z" />
+    <!-- Placeholder path; replace by ic_aperonix_logo.png for final launcher/foreground. -->
+    <path android:fillColor="#FFFFFF" android:pathData="M256,32 C... Z" />
 </vector>
