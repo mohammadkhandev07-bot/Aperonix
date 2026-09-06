@@ -1,9 +1,11 @@
-# APK build note
+# Build note
 
-To produce the APK run:
+This project has been prepared and finalized for local build. The codebase includes placeholder usage for the Gemini API endpoint (GeminiClient); replace the endpoint and configure your GEMINI_API_KEY in local.properties.
+
+Local build command:
 
 ./gradlew clean assembleDebug
 
-APK will be at: app/build/outputs/apk/debug/app-debug.apk
+Expected APK path after success:
 
-If you want me to add the exact supplied logo image into the repository, reply with ADD_LOGO_NOW and I will push it. Otherwise the placeholder vector will be used and the app will still build.
+app/build/outputs/apk/debug/app-debug.apk
