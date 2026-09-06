@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -18,6 +19,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        // Expose GEMINI_API_KEY from project properties into BuildConfig
+        val geminiKey: String = (project.findProperty("GEMINI_API_KEY") as? String) ?: ""
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
     }
 
     buildTypes {
@@ -59,7 +64,7 @@ dependencies {
 
     // Compose
     implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
     // ViewModel
@@ -70,10 +75,17 @@ dependencies {
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // OkHttp for optional Gemini HTTP client
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    // TTS & Recognition related
+    implementation("androidx.lifecycle:lifecycle-service:2.6.1")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
