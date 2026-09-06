@@ -6,11 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.aperonix.ai.ai.GeminiClient
 import com.aperonix.ai.conversation.AppDatabase
 import com.aperonix.ai.conversation.ConversationEntity
+import com.aperonix.ai.memory.MemoryRepository
+import com.aperonix.ai.settings.SettingsRepository
 import com.aperonix.ai.voice.SpeechRecognizerManager
 import com.aperonix.ai.voice.TextToSpeechManager
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 sealed class UiState {
     object Idle : UiState()
@@ -28,9 +31,36 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val ttsManager = TextToSpeechManager(application.applicationContext)
     private val geminiClient = GeminiClient()
     private val db = AppDatabase.getInstance(application.applicationContext)
+    private val settingsRepo = SettingsRepository(application.applicationContext)
+    private val memoryRepo = MemoryRepository(application.applicationContext)
 
     init {
         speechManager.initialize()
+    }
+
+    fun onPermissionGranted() {
+        // Called once permission granted: apply user settings and greet
+        viewModelScope.launch {
+            try {
+                val voice = settingsRepo.voice.first()
+                val rate = settingsRepo.speechRate.first() ?: 1.0f
+                val pitch = settingsRepo.pitch.first() ?: 1.0f
+
+                ttsManager.setSpeechRate(rate)
+                ttsManager.setPitch(pitch)
+                if (!voice.isNullOrBlank() && voice != "Default") {
+                    ttsManager.selectVoiceByName(voice)
+                }
+
+                // Friendly greeting
+                _uiState.value = UiState.Speaking
+                ttsManager.speak("Hello, I'm Aperonix. How can I help you?") {
+                    _uiState.value = UiState.Idle
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.localizedMessage ?: "Initialization error")
+            }
+        }
     }
 
     fun startListening() {
@@ -50,6 +80,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                             _uiState.value = UiState.Speaking
                             ttsManager.speak(text) {
                                 _uiState.value = UiState.Idle
+                            }
+                            // Execute structured action if any (validated)
+                            res.action?.let { action ->
+                                val valid = com.aperonix.ai.actions.ActionValidator.validate(action)
+                                if (valid) {
+                                    com.aperonix.ai.actions.ActionExecutor.execute(getApplication(), action)
+                                }
                             }
                         }
                         is com.aperonix.ai.ai.GeminiResult.Error -> {

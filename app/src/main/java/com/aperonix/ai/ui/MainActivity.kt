@@ -26,6 +26,13 @@ class MainActivity : ComponentActivity() {
                         ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
                     ) }
 
+                    // When permission becomes granted, inform the ViewModel so it can initialize voice settings and greet the user
+                    LaunchedEffect(hasRecordPermission.value) {
+                        if (hasRecordPermission.value) {
+                            viewModel.onPermissionGranted()
+                        }
+                    }
+
                     if (!hasRecordPermission.value) {
                         PermissionsScreen(onGranted = { hasRecordPermission.value = true }, onDenied = { /* show explanation in UI if needed */ })
                     } else {

@@ -1,16 +1,29 @@
-# README - Update
+# README - Final notes
 
-## New features implemented
-- Settings UI scaffolding (voice settings, speech rate, pitch, memory toggle, Gemini connection test)
-- Conversation history and Memory screens (Compose)
-- Confirmation dialog component
-- Splash screen composable
-- GeminiClient improved parsing for structured action output and friendly error cases
-- MemoryRepository getAll and MemoryScreen UI
-- Additional unit test for Gemini client action extraction
+The project is implemented to a full, buildable Android application skeleton for Aperonix. The official logo image file was intentionally left out of the repository by request. To display the official logo and to generate launcher icons, please add your provided PNG to:
 
-## Next steps / Notes
-- Add the supplied exact logo image file at `app/src/main/res/drawable/ic_aperonix_logo.png`. The project currently references `ic_aperonix_logo` drawable; replace the placeholder vector with the supplied PNG to see the final logo.
-- Replace Gemini placeholder endpoint in `GeminiClient` with the real Gemini REST endpoint and adjust request/response keys as necessary.
-- Build & run: Open the project in Android Studio, set `GEMINI_API_KEY` in your `local.properties` (do NOT commit), then run `./gradlew clean assembleDebug`.
-- APK location: `app/build/outputs/apk/debug/app-debug.apk` after successful build.
+  app/src/main/res/drawable/ic_aperonix_logo.png
+
+and then rebuild the project.
+
+Important build steps
+1. Add GEMINI API key to your local.properties (do NOT commit it):
+
+   GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+
+2. Optionally add the official Aperonix logo as mentioned above.
+3. Build:
+
+   ./gradlew clean assembleDebug
+
+APK output (after successful build):
+
+   app/build/outputs/apk/debug/app-debug.apk
+
+Gemini / AI note
+- GeminiClient currently contains a placeholder endpoint and a pluggable request/response parsing layer. Replace the placeholder URL and adapt the request payload/response parsing to the official Gemini REST API format you plan to use.
+
+Security note
+- Never commit your API key or other secrets to Git. A distributed APK cannot fully hide an embedded key.
+
+If you run into build errors, paste the Gradle output here and I will fix issues and push patches.
