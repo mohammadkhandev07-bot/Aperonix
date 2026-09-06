@@ -78,4 +78,21 @@ class TextToSpeechManager(private val context: Context) : TextToSpeech.OnInitLis
     }
 
     fun getAvailableVoices(): List<TtsVoiceInfo> = availableVoices
+
+    fun selectVoiceByName(name: String): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return false
+        try {
+            val voices = tts?.voices ?: return false
+            val match = voices.firstOrNull { it.name == name }
+            if (match != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    tts?.voice = match
+                    return true
+                }
+            }
+        } catch (e: Exception) {
+            Log.w("TTS", "selectVoiceByName failed", e)
+        }
+        return false
+    }
 }
