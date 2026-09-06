@@ -1,32 +1,16 @@
-# Aperonix
+# README - Update
 
-Aperonix is a voice-first Android AI assistant. This repository contains a complete Android project implemented in Kotlin and Jetpack Compose.
+## New features implemented
+- Settings UI scaffolding (voice settings, speech rate, pitch, memory toggle, Gemini connection test)
+- Conversation history and Memory screens (Compose)
+- Confirmation dialog component
+- Splash screen composable
+- GeminiClient improved parsing for structured action output and friendly error cases
+- MemoryRepository getAll and MemoryScreen UI
+- Additional unit test for Gemini client action extraction
 
-IMPORTANT: This repository does NOT include any real Gemini API key. Do NOT commit your API keys. For development, add the following to your local.properties (do NOT commit):
-
-GEMINI_API_KEY=YOUR_GEMINI_API_KEY
-
-What was implemented in this update:
-- SplashActivity and MainActivity wiring
-- Main Compose UI with breathing/pulse animation and microphone interaction
-- SpeechRecognizerManager (Speech-to-Text)
-- TextToSpeechManager with utterance completion callback
-- GeminiClient abstraction (HTTP placeholder, handles missing key)
-- Room entities and DAOs for Conversation and Memory
-- AppDatabase singleton
-- SettingsRepository using DataStore (preferences)
-- ActionValidator and ActionExecutor for safe Android actions
-- Unit tests for ActionValidator
-
-Next steps (not yet completed):
-- Full Settings UI
-- Memory and Conversation history UI
-- Full Gemini production integration (replace placeholder endpoint)
-- Additional tests
-
-Build
-- Open in Android Studio, add your GEMINI_API_KEY to local.properties, and build.
-- APK path after successful build: app/build/outputs/apk/debug/app-debug.apk
-
-Security note
-- Embedding an API key inside an APK is not fully secure. Users with APK inspection skills can extract embedded keys. For production use, a secure backend proxy is strongly recommended.
+## Next steps / Notes
+- Add the supplied exact logo image file at `app/src/main/res/drawable/ic_aperonix_logo.png`. The project currently references `ic_aperonix_logo` drawable; replace the placeholder vector with the supplied PNG to see the final logo.
+- Replace Gemini placeholder endpoint in `GeminiClient` with the real Gemini REST endpoint and adjust request/response keys as necessary.
+- Build & run: Open the project in Android Studio, set `GEMINI_API_KEY` in your `local.properties` (do NOT commit), then run `./gradlew clean assembleDebug`.
+- APK location: `app/build/outputs/apk/debug/app-debug.apk` after successful build.

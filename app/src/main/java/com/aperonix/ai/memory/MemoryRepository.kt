@@ -11,7 +11,7 @@ class MemoryRepository(private val context: Context) {
         val now = System.currentTimeMillis()
         val existing = memoryDao.findByTopic(topic)
         if (existing != null) {
-            // Not implementing update for brevity; insert as new
+            // Insert a new record as a simple approach (could be an update operation)
             memoryDao.insert(MemoryEntity(topic = topic, value = value, createdAt = now, updatedAt = now))
         } else {
             memoryDao.insert(MemoryEntity(topic = topic, value = value, createdAt = now, updatedAt = now))
@@ -21,6 +21,8 @@ class MemoryRepository(private val context: Context) {
     suspend fun getMemory(topic: String): MemoryEntity? {
         return memoryDao.findByTopic(topic)
     }
+
+    suspend fun getAllMemory(): List<MemoryEntity> = memoryDao.getAll()
 
     suspend fun clearAll() {
         memoryDao.clearAll()
